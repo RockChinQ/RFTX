@@ -6,6 +6,7 @@ import java.net.Socket;
 
 /**
  * default auth that allow all conn.
+ * @author Rock Chin
  */
 public class AuthServer implements IAuthServer{
     @Override
