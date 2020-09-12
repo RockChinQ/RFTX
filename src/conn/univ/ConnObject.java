@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.net.Socket;
 
 /**
- * Use dataInput/OutputStream to describe a conn.
+ * Package conn,dataIOStream
  * @author Rock Chin
  */
 public class ConnObject {

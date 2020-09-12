@@ -1,6 +1,10 @@
 package conn.server;
 
+/**
+ * Server interface.
+ * @author Rock Chin
+ */
 public interface IServer {
-	IServer start();
-	IServer stop();
+	void start();
+	void stop();
 }

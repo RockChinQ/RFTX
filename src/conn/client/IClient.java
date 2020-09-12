@@ -1,5 +1,8 @@
 package conn.client;
 
+/**
+ * Client interface.
+ */
 public interface IClient {
-	IClient connect();
+	void connect();
 }
