@@ -1,4 +1,4 @@
-package conn.server;
+package conn.univ;
 
 public interface IHandler {
 	void handle(ConnObject object);

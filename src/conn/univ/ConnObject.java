@@ -1,4 +1,4 @@
-package conn.server;
+package conn.univ;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
