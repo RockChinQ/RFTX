@@ -1,6 +1,6 @@
-package conn.client;
+package lib.conn.client;
 
-import conn.univ.ConnObject;
+import lib.conn.univ.ConnObject;
 
 /**
  * Auth methods to be called by client while creating conn.

@@ -1,4 +1,4 @@
-package conn.univ.cmd;
+package rftx.cmd;
 
 /**
  * 描述了一个逻辑的实现方法

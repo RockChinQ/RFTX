@@ -1,4 +1,4 @@
-package conn.univ;
+package lib.conn.univ;
 
 /**
  * Universal socket handler.

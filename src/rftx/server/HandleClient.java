@@ -1,7 +1,7 @@
-package conn.server;
+package rftx.server;
 
-import conn.univ.ConnObject;
-import conn.univ.IHandler;
+import lib.conn.univ.ConnObject;
+import lib.conn.univ.IHandler;
 
 /**
  * unique handler for one conn.

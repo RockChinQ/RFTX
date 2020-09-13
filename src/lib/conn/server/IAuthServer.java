@@ -1,6 +1,6 @@
-package conn.server;
+package lib.conn.server;
 
-import conn.univ.ConnObject;
+import lib.conn.univ.ConnObject;
 
 import java.net.Socket;
 

@@ -1,4 +1,4 @@
-package conn.univ.cmd;
+package rftx.cmd;
 
 /**
  * 包装一个命令的名字和参数

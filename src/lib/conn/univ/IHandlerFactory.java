@@ -1,4 +1,4 @@
-package conn.univ;
+package lib.conn.univ;
 
 /**
  * Abstract factory making IHandler instance

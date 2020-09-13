@@ -1,8 +1,11 @@
-package conn.server;
+package rftx.server;
 
-import conn.univ.ConnObject;
-import conn.univ.IHandler;
-import conn.univ.IHandlerFactory;
+import lib.conn.univ.ConnObject;
+import lib.util.IExceptionListener;
+import lib.conn.univ.IHandler;
+import lib.conn.univ.IHandlerFactory;
+import lib.conn.server.IAuthServer;
+import lib.conn.server.IServer;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -12,7 +15,7 @@ import java.util.ArrayList;
  * RFTXServer,accept&save ConnObjects
  * @author Rock Chin
  */
-public class RFTXServer implements IServer{
+public class RFTXServer implements IServer {
     private int port=0;
     public int getPort() {
         return port;
@@ -55,9 +58,9 @@ public class RFTXServer implements IServer{
     public void setExceptionListener(IExceptionListener exceptionListener) {
         this.exceptionListener = exceptionListener;
     }
-    private void callExceptionListener(Exception e){
+    private void callExceptionListener(Exception e,String msg){
         if (exceptionListener!=null){
-            exceptionListener.exceptionCaught(e);
+            exceptionListener.exceptionCaught(e,msg);
         }
     }
     /**
@@ -81,15 +84,15 @@ public class RFTXServer implements IServer{
                                handler.handle(connObject);
                             }
                         }catch (Exception authingConn){
-                            //TODO fill
+                            callExceptionListener(authingConn,"cannot auth conn.");
                         }
                     }).start();
                 }catch (Exception makingAuthThread){
-                    //TODO fill
+                    callExceptionListener(makingAuthThread,"cannot start to auth conn.");
                 }
             }
         }catch (Exception acceptingConn){
-            //TODO fill
+            callExceptionListener(acceptingConn,"cannot accept conn.");
         }
     });
     /**

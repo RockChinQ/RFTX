@@ -1,6 +1,7 @@
-package conn.server;
+package rftx.server;
 
-import conn.univ.ConnObject;
+import lib.conn.univ.ConnObject;
+import lib.conn.server.IAuthServer;
 
 import java.net.Socket;
 
@@ -8,7 +9,7 @@ import java.net.Socket;
  * default auth that allow all conn.
  * @author Rock Chin
  */
-public class AuthServer implements IAuthServer{
+public class AuthServer implements IAuthServer {
     @Override
     public ConnObject auth(Socket socket)throws Exception{
         return new ConnObject(socket);

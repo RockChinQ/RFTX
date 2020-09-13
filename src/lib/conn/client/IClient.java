@@ -1,4 +1,4 @@
-package conn.client;
+package lib.conn.client;
 
 /**
  * Client interface.
