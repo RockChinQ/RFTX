@@ -14,7 +14,6 @@ public class ConnObject {
 	private DataInputStream inputStream;
 	private DataOutputStream outputStream;
 	private Socket socket;
-
 	/**
 	 * create instance by socket
 	 * @param socket conn socket

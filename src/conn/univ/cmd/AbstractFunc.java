@@ -1,4 +1,4 @@
-package conn.cmd;
+package conn.univ.cmd;
 
 /**
  * 描述了一个逻辑的实现方法

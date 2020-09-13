@@ -16,4 +16,5 @@ public interface IHandler {
 	 * stop handle routine and dispose memory
 	 */
 	void dispose();
+	String getID();
 }

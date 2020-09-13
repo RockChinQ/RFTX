@@ -1,4 +1,4 @@
-package conn.cmd;
+package conn.univ.cmd;
 
 /**
  * 包装一个命令的名字和参数

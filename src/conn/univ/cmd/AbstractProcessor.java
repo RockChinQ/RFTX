@@ -1,4 +1,4 @@
-package conn.cmd;
+package conn.univ.cmd;
 
 import java.util.ArrayList;
 

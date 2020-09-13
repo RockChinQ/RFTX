@@ -1,4 +1,4 @@
-package conn.cmd;
+package conn.univ.cmd;
 
 /**
  * 自定义类型，描述处理指令时的异常

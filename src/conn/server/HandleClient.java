@@ -31,6 +31,11 @@ public class HandleClient implements IHandler,Runnable {
     }
 
     @Override
+    public String getID() {
+        return getName();
+    }
+
+    @Override
     public void run() {
 
     }

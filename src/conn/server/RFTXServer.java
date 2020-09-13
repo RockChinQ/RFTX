@@ -36,7 +36,7 @@ public class RFTXServer implements IServer{
     /**
      * handler factory
      */
-    private IHandlerFactory handlerFactory;
+    private IHandlerFactory handlerFactory=new HandlerFactory();
     public IHandlerFactory getHandlerFactory() {
         return handlerFactory;
     }
@@ -44,6 +44,22 @@ public class RFTXServer implements IServer{
         this.handlerFactory = handlerFactory;
     }
 
+    /**
+     * exception listener
+     */
+    private IExceptionListener exceptionListener;
+    public IExceptionListener getExceptionListener() {
+        return exceptionListener;
+    }
+
+    public void setExceptionListener(IExceptionListener exceptionListener) {
+        this.exceptionListener = exceptionListener;
+    }
+    private void callExceptionListener(Exception e){
+        if (exceptionListener!=null){
+            exceptionListener.exceptionCaught(e);
+        }
+    }
     /**
      * anonymous thread accepting conn
      */
