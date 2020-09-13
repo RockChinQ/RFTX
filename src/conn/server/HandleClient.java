@@ -7,8 +7,19 @@ import conn.univ.IHandler;
  * unique handler for one conn.
  * @author Rock Chin
  */
-public class HandleClient implements IHandler {
-    ConnObject connObject;
+public class HandleClient implements IHandler,Runnable {
+    private ConnObject connObject;
+    public ConnObject getConnObject() {
+        return connObject;
+    }
+    String name;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
     @Override
     public void handle(ConnObject object) {
         this.connObject=object;
@@ -16,6 +27,11 @@ public class HandleClient implements IHandler {
 
     @Override
     public void dispose() {
+
+    }
+
+    @Override
+    public void run() {
 
     }
 }
