@@ -1,6 +1,6 @@
 package rftx.server;
 
-import lib.conn.univ.ConnObject;
+import lib.conn.univ.ConnContext;
 import lib.conn.univ.IHandler;
 import lib.conn.univ.IHandlerFactory;
 
@@ -17,7 +17,7 @@ public class HandlerFactory implements IHandlerFactory {
         return handlerFactory;
     }
     @Override
-    public IHandler make(ConnObject connObject) {
+    public IHandler make(ConnContext connContext) {
         return new HandleClient();
     }
 }

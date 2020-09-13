@@ -1,6 +1,6 @@
 package rftx.server;
 
-import lib.conn.univ.ConnObject;
+import lib.conn.univ.ConnContext;
 import lib.conn.server.IAuthServer;
 
 import java.net.Socket;
@@ -11,7 +11,7 @@ import java.net.Socket;
  */
 public class AuthServer implements IAuthServer {
     @Override
-    public ConnObject auth(Socket socket)throws Exception{
-        return new ConnObject(socket);
+    public ConnContext auth(Socket socket)throws Exception{
+        return new ConnContext(socket);
     }
 }

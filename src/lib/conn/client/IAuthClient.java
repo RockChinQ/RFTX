@@ -1,6 +1,6 @@
 package lib.conn.client;
 
-import lib.conn.univ.ConnObject;
+import lib.conn.univ.ConnContext;
 
 /**
  * Auth methods to be called by client while creating conn.
@@ -8,5 +8,5 @@ import lib.conn.univ.ConnObject;
  * @author Rock Chin
  */
 public interface IAuthClient {
-	void auth(ConnObject connObject);
+	void auth(ConnContext connContext);
 }

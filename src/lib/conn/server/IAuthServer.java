@@ -1,6 +1,6 @@
 package lib.conn.server;
 
-import lib.conn.univ.ConnObject;
+import lib.conn.univ.ConnContext;
 
 import java.net.Socket;
 
@@ -13,8 +13,8 @@ public interface IAuthServer {
 	/**
 	 * if authed successfully,return a ConnObject(created in this methods)
 	 * @param socket socket from client created by server
-	 * @return ConnObject of client socket
+	 * @return ConnContext of client socket
 	 * @throws Exception any exception occurred while authing conn
 	 */
-	ConnObject auth(Socket socket)throws Exception;
+	ConnContext auth(Socket socket)throws Exception;
 }

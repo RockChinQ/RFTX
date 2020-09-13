@@ -9,7 +9,7 @@ import java.net.Socket;
  * Package conn,dataIOStream
  * @author Rock Chin
  */
-public class ConnObject {
+public class ConnContext {
 	private DataInputStream inputStream;
 	private DataOutputStream outputStream;
 	private Socket socket;
@@ -18,7 +18,7 @@ public class ConnObject {
 	 * @param socket conn socket
 	 * @throws IOException
 	 */
-	public ConnObject(Socket socket)throws IOException {
+	public ConnContext(Socket socket)throws IOException {
 		this.socket=socket;
 		this.inputStream=new DataInputStream(socket.getInputStream());
 		this.outputStream=new DataOutputStream(socket.getOutputStream());
@@ -30,7 +30,7 @@ public class ConnObject {
 	 * @param inputStream already created inputStream
 	 * @param outputStream already created outputStream
 	 */
-	public ConnObject(Socket socket,DataInputStream inputStream,DataOutputStream outputStream){
+	public ConnContext(Socket socket, DataInputStream inputStream, DataOutputStream outputStream){
 		this.socket=socket;
 		this.inputStream=inputStream;
 		this.outputStream=outputStream;

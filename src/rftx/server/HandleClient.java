@@ -1,6 +1,6 @@
 package rftx.server;
 
-import lib.conn.univ.ConnObject;
+import lib.conn.univ.ConnContext;
 import lib.conn.univ.IHandler;
 
 /**
@@ -8,9 +8,9 @@ import lib.conn.univ.IHandler;
  * @author Rock Chin
  */
 public class HandleClient implements IHandler,Runnable {
-    private ConnObject connObject;
-    public ConnObject getConnObject() {
-        return connObject;
+    private ConnContext connContext;
+    public ConnContext getConnContext() {
+        return connContext;
     }
     String name;
     public String getName() {
@@ -28,8 +28,8 @@ public class HandleClient implements IHandler,Runnable {
 
     });
     @Override
-    public void handle(ConnObject object) {
-        this.connObject=object;
+    public void handle(ConnContext object) {
+        this.connContext =object;
         handleConn.start();
     }
 

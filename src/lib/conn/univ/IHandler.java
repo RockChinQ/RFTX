@@ -10,7 +10,7 @@ public interface IHandler {
 	 * start handle routine after making socket conn.
 	 * @param object connObject created by auth methods
 	 */
-	void handle(ConnObject object);
+	void handle(ConnContext object);
 
 	/**
 	 * stop handle routine and dispose memory

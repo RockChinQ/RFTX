@@ -6,5 +6,5 @@ package lib.conn.univ;
  * @author Rock Chin
  */
 public interface IHandlerFactory {
-    IHandler make(ConnObject connObject);
+    IHandler make(ConnContext connContext);
 }

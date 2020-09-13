@@ -1,6 +1,6 @@
 package rftx.server;
 
-import lib.conn.univ.ConnObject;
+import lib.conn.univ.ConnContext;
 import lib.util.IExceptionListener;
 import lib.conn.univ.IHandler;
 import lib.conn.univ.IHandlerFactory;
@@ -77,11 +77,11 @@ public class RFTXServer implements IServer {
                     new Thread(()-> {
                         try {
                             //auth
-                            ConnObject connObject = authServer.auth(socket);
-                            if (connObject != null) {
-                               IHandler handler=handlerFactory.make(connObject);
+                            ConnContext connContext = authServer.auth(socket);
+                            if (connContext != null) {
+                               IHandler handler=handlerFactory.make(connContext);
                                getClients().add(handler);
-                               handler.handle(connObject);
+                               handler.handle(connContext);
                             }
                         }catch (Exception authingConn){
                             callExceptionListener(authingConn,"cannot auth conn.");
