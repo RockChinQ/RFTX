@@ -20,9 +20,17 @@ public class HandleClient implements IHandler,Runnable {
     public void setName(String name) {
         this.name = name;
     }
+
+    /**
+     * thread handling conn
+     */
+    private final Thread handleConn=new Thread(()->{
+
+    });
     @Override
     public void handle(ConnObject object) {
         this.connObject=object;
+        handleConn.start();
     }
 
     @Override

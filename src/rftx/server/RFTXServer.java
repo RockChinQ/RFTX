@@ -39,7 +39,7 @@ public class RFTXServer implements IServer {
     /**
      * handler factory
      */
-    private IHandlerFactory handlerFactory=new HandlerFactory();
+    private IHandlerFactory handlerFactory=HandlerFactory.getInstance();
     public IHandlerFactory getHandlerFactory() {
         return handlerFactory;
     }
@@ -66,7 +66,7 @@ public class RFTXServer implements IServer {
     /**
      * anonymous thread accepting conn
      */
-    private Thread acceptConn=new Thread(()->{
+    private final Thread acceptConn=new Thread(()->{
         try {
             ServerSocket serverSocket=new ServerSocket(port);
             //accept
