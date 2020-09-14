@@ -3,6 +3,8 @@ package rftx.client;
 import lib.conn.client.IAuthClient;
 import lib.conn.univ.ConnContext;
 
+import java.net.Socket;
+
 /**
  * Default auth class that send nothing.
  * matched server default auth class
@@ -10,7 +12,7 @@ import lib.conn.univ.ConnContext;
  */
 public class DefaultAuthClient implements IAuthClient {
 	@Override
-	public void auth(ConnContext connContext) {
-
+	public ConnContext auth(Socket socket)throws Exception {
+		return new ConnContext(socket);
 	}
 }

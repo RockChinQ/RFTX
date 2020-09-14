@@ -114,6 +114,18 @@ public class RFTXServer implements IServer {
     public RFTXServer(int port){
         this.port=port;
     }
+
+    /**
+     * create instance by port,handlerFactory,authServer
+     * @param port server port
+     * @param handlerFactory handler factory
+     * @param authServer authServer
+     */
+    public RFTXServer(int port,IHandlerFactory handlerFactory,IAuthServer authServer){
+        this.setPort(port);
+        this.setHandlerFactory(handlerFactory);
+        this.setAuthServer(authServer);
+    }
     @Override
     public void start() {
         acceptConn.start();

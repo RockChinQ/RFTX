@@ -4,6 +4,7 @@ import lib.conn.client.IAuthClient;
 import lib.conn.client.IClient;
 import lib.conn.univ.IHandler;
 import lib.conn.univ.IHandlerFactory;
+import lib.util.IExceptionListener;
 
 /**
  * RFTX client
@@ -69,6 +70,23 @@ public class RFTXClient implements IClient {
     }
 
     /**
+     * exception listener
+     */
+    private IExceptionListener exceptionListener;
+    public IExceptionListener getExceptionListener() {
+        return exceptionListener;
+    }
+
+    public void setExceptionListener(IExceptionListener exceptionListener) {
+        this.exceptionListener = exceptionListener;
+    }
+    private void callExceptionListener(Exception e,String msg){
+        if (exceptionListener!=null){
+            exceptionListener.exceptionCaught(e,msg);
+        }
+    }
+
+    /**
      * create instance by addr,port
      * @param addr server addr
      * @param port service port
@@ -76,6 +94,20 @@ public class RFTXClient implements IClient {
     public RFTXClient(String addr,int port){
         this.setAddr(addr);
         this.setPort(port);
+    }
+
+    /**
+     * create instance by addr,port,handlerFactory,authClient
+     * @param addr server addr
+     * @param port service pot
+     * @param handlerFactory handler factory
+     * @param authClient authClient
+     */
+    public RFTXClient(String addr,int port,IHandlerFactory handlerFactory,IAuthClient authClient){
+        this.setAddr(addr);
+        this.setPort(port);
+        this.setHandlerFactory(handlerFactory);
+        this.setAuthClient(authClient);
     }
 
     /**
