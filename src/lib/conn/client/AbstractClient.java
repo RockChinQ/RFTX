@@ -30,7 +30,7 @@ public abstract class AbstractClient implements IClient{
 	/**
 	 * Handler factory
 	 */
-	IHandlerFactory handlerFactory;
+	private IHandlerFactory handlerFactory;
 	public IHandlerFactory getHandlerFactory() {
 		return handlerFactory;
 	}
@@ -42,7 +42,7 @@ public abstract class AbstractClient implements IClient{
 	/**
 	 * unique handler for unique conn to server
 	 */
-	IHandler handler;
+	private IHandler handler;
 
 	public IHandler getHandler() {
 		return handler;
@@ -55,7 +55,7 @@ public abstract class AbstractClient implements IClient{
 	/**
 	 * send auth message while making conn
 	 */
-	IAuthClient authClient;
+	private IAuthClient authClient;
 	public IAuthClient getAuthClient() {
 		return authClient;
 	}
