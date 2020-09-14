@@ -2,9 +2,12 @@ package rftx.client;
 
 import lib.conn.client.IAuthClient;
 import lib.conn.client.IClient;
+import lib.conn.univ.ConnContext;
 import lib.conn.univ.IHandler;
 import lib.conn.univ.IHandlerFactory;
 import lib.util.IExceptionListener;
+
+import java.net.Socket;
 
 /**
  * RFTX client
@@ -112,9 +115,26 @@ public class RFTXClient implements IClient {
 
     /**
      * make ConnContext obj here and then auth
+     * just try to connect once,if connect reset while handling conn after,throw exception there.
+     * this is not a parallel method
      */
     @Override
     public void connect() {
-
+        Socket socket;
+        try {
+            socket = new Socket(getAddr(), getPort());
+        }catch (Exception e){
+            callExceptionListener(e,"cannot connect to "+getAddr()+":"+getPort());
+            return;
+        }
+        ConnContext connContext;
+        try {
+            connContext = getAuthClient().auth(socket);
+        }catch (Exception authing){
+            callExceptionListener(authing,"cannot send auth message.");
+            return;
+        }
+        this.setHandler(this.getHandlerFactory().make(connContext));
+        this.getHandler().handle(connContext);
     }
 }
