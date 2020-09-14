@@ -1,5 +1,6 @@
 package rftx.server;
 
+import lib.conn.server.AbstractServer;
 import lib.conn.univ.ConnContext;
 import lib.util.IExceptionListener;
 import lib.conn.univ.IHandler;
@@ -15,60 +16,13 @@ import java.util.ArrayList;
  * RFTXServer,accept&save ConnObjects
  * @author Rock Chin
  */
-public class RFTXServer implements IServer {
-    private int port=0;
-    public int getPort() {
-        return port;
-    }
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    /**
-     * Auth server
-     */
-    private IAuthServer authServer=new DefaultAuthServer();
-    public IAuthServer getAuthServer() {
-        return authServer;
-    }
-
-    public void setAuthServer(IAuthServer authServer) {
-        this.authServer = authServer;
-    }
-
-    /**
-     * handler factory
-     */
-    private IHandlerFactory handlerFactory=HandlerFactory.getInstance();
-    public IHandlerFactory getHandlerFactory() {
-        return handlerFactory;
-    }
-    public void setHandlerFactory(IHandlerFactory handlerFactory) {
-        this.handlerFactory = handlerFactory;
-    }
-
-    /**
-     * exception listener
-     */
-    private IExceptionListener exceptionListener;
-    public IExceptionListener getExceptionListener() {
-        return exceptionListener;
-    }
-
-    public void setExceptionListener(IExceptionListener exceptionListener) {
-        this.exceptionListener = exceptionListener;
-    }
-    private void callExceptionListener(Exception e,String msg){
-        if (exceptionListener!=null){
-            exceptionListener.exceptionCaught(e,msg);
-        }
-    }
+public class RFTXServer extends AbstractServer implements IServer {
     /**
      * anonymous thread accepting conn
      */
     private final Thread acceptConn=new Thread(()->{
         try {
-            ServerSocket serverSocket=new ServerSocket(port);
+            ServerSocket serverSocket=new ServerSocket(getPort());
             //accept
             while (true){
                 Socket socket=serverSocket.accept();
@@ -77,9 +31,9 @@ public class RFTXServer implements IServer {
                     new Thread(()-> {
                         try {
                             //auth
-                            ConnContext connContext = authServer.auth(socket);
+                            ConnContext connContext = getAuthServer().auth(socket);
                             if (connContext != null) {
-                               IHandler handler=handlerFactory.make(connContext);
+                               IHandler handler=getHandlerFactory().make(connContext);
                                getClients().add(handler);
                                handler.handle(connContext);
                             }
@@ -96,23 +50,12 @@ public class RFTXServer implements IServer {
         }
     });
     /**
-     * ArrayList stored all client conns
-     */
-    private ArrayList<IHandler> clients=new ArrayList<>();
-    public ArrayList<IHandler> getClients() {
-        return clients;
-    }
-
-    public void setClients(ArrayList<IHandler> clients) {
-        this.clients = clients;
-    }
-
-    /**
      * create instance,port provided
      * @param port server port
      */
     public RFTXServer(int port){
-        this.port=port;
+        this.setPort(port);
+        initDefault();
     }
 
     /**
@@ -125,6 +68,14 @@ public class RFTXServer implements IServer {
         this.setPort(port);
         this.setHandlerFactory(handlerFactory);
         this.setAuthServer(authServer);
+        initDefault();
+    }
+    /**
+     * call to set default handle factory and auth client when creating instance
+     */
+    private void initDefault(){
+        this.setHandlerFactory(HandlerFactory.getInstance());
+        this.setAuthServer(new DefaultAuthServer());
     }
     @Override
     public void start() {
@@ -133,6 +84,6 @@ public class RFTXServer implements IServer {
 
     @Override
     public void stop() {
-        clients.forEach(IHandler::dispose);
+        getClients().forEach(IHandler::dispose);
     }
 }
