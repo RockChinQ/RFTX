@@ -1,4 +1,4 @@
-package rftx.cmd;
+package lib.cmd;
 
 import java.util.ArrayList;
 

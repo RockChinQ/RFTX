@@ -1,4 +1,4 @@
-package rftx.cmd;
+package lib.cmd;
 
 /**
  * 包装一个命令的名字和参数

@@ -1,4 +1,4 @@
-package rftx.cmd;
+package lib.cmd;
 
 /**
  * 描述了一个逻辑的实现方法
