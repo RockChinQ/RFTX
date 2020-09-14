@@ -6,10 +6,10 @@ import lib.conn.server.IAuthServer;
 import java.net.Socket;
 
 /**
- * default auth that allow all conn.
+ * default auth that allows any conn.
  * @author Rock Chin
  */
-public class AuthServer implements IAuthServer {
+public class DefaultAuthServer implements IAuthServer {
     @Override
     public ConnContext auth(Socket socket)throws Exception{
         return new ConnContext(socket);

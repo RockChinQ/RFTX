@@ -1,5 +1,6 @@
 package rftx.client;
 
+import lib.conn.client.IAuthClient;
 import lib.conn.client.IClient;
 import lib.conn.univ.IHandler;
 import lib.conn.univ.IHandlerFactory;
@@ -30,7 +31,10 @@ public class RFTXClient implements IClient {
         this.port = port;
     }
 
-    IHandlerFactory handlerFactory;
+    /**
+     * Handler factory
+     */
+    IHandlerFactory handlerFactory=HandlerFactory.getInstance();
     public IHandlerFactory getHandlerFactory() {
         return handlerFactory;
     }
@@ -39,6 +43,9 @@ public class RFTXClient implements IClient {
         this.handlerFactory = handlerFactory;
     }
 
+    /**
+     * unique handler for unique conn to server
+     */
     IHandler handler;
 
     public IHandler getHandler() {
@@ -50,6 +57,18 @@ public class RFTXClient implements IClient {
     }
 
     /**
+     * send auth message while making conn
+     */
+    IAuthClient authClient=new DefaultAuthClient();
+    public IAuthClient getAuthClient() {
+        return authClient;
+    }
+
+    public void setAuthClient(IAuthClient authClient) {
+        this.authClient = authClient;
+    }
+
+    /**
      * create instance by addr,port
      * @param addr server addr
      * @param port service port
@@ -58,6 +77,10 @@ public class RFTXClient implements IClient {
         this.setAddr(addr);
         this.setPort(port);
     }
+
+    /**
+     * make ConnContext obj here and then auth
+     */
     @Override
     public void connect() {
 

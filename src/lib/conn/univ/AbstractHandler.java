@@ -14,4 +14,13 @@ public abstract class AbstractHandler implements IHandler{
 	public void setConnContext(ConnContext connContext) {
 		this.connContext = connContext;
 	}
+
+	private String name;
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 }

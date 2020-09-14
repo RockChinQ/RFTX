@@ -27,7 +27,7 @@ public class RFTXServer implements IServer {
     /**
      * Auth server
      */
-    private IAuthServer authServer=new AuthServer();
+    private IAuthServer authServer=new DefaultAuthServer();
     public IAuthServer getAuthServer() {
         return authServer;
     }

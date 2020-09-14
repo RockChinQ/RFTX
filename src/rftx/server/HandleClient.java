@@ -9,14 +9,6 @@ import lib.conn.univ.IHandler;
  * @author Rock Chin
  */
 public class HandleClient extends AbstractHandler {
-    String name;
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     /**
      * thread for handling conn
