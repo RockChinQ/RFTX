@@ -1,8 +1,8 @@
 package rftx.univ;
 
-import lib.conn.univ.ConnContext;
-import lib.conn.univ.IHandler;
-import lib.conn.univ.IHandlerFactory;
+import model.conn.univ.ConnContext;
+import model.conn.univ.IHandler;
+import model.conn.univ.IHandlerFactory;
 
 /**
  * Client handler factory for RFTX

@@ -1,4 +1,4 @@
-package lib.conn.univ;
+package model.conn.univ;
 
 /**
  * Abstract handler included a connContext obj.

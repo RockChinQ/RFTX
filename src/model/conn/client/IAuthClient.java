@@ -1,6 +1,6 @@
-package lib.conn.client;
+package model.conn.client;
 
-import lib.conn.univ.ConnContext;
+import model.conn.univ.ConnContext;
 
 import java.net.Socket;
 

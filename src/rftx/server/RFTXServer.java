@@ -1,11 +1,11 @@
 package rftx.server;
 
-import lib.conn.server.AbstractServer;
-import lib.conn.univ.ConnContext;
-import lib.conn.univ.IHandler;
-import lib.conn.univ.IHandlerFactory;
-import lib.conn.server.IAuthServer;
-import lib.conn.server.IServer;
+import model.conn.server.AbstractServer;
+import model.conn.univ.ConnContext;
+import model.conn.univ.IHandler;
+import model.conn.univ.IHandlerFactory;
+import model.conn.server.IAuthServer;
+import model.conn.server.IServer;
 import rftx.univ.HandlerFactory;
 import rftx.util.ByteArrayOperator;
 
@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 /**
  * RFTXServer,accept&save ConnObjects
@@ -79,7 +80,18 @@ public class RFTXServer extends AbstractServer implements IServer {
         this.setPort(port);
         initDefault();
     }
-
+    /**
+     * create instance by name,handlersArrayList
+     * this handlers array list is created already,this is designed for host that need
+     * to share accepted conns(as server) and created conns(as client).
+     * it made "server link" to be possible.
+     * @param name server name
+     * @param handlers already created handlers array list
+     */
+    public RFTXServer(String name, ArrayList<IHandler> handlers){
+        this.setName(name);
+        this.setClients(handlers);
+    }
     /**
      * create instance by port,handlerFactory,authServer
      * @param port server port

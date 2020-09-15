@@ -1,4 +1,4 @@
-package lib.conn.server;
+package model.conn.server;
 
 /**
  * Server interface.

@@ -1,7 +1,7 @@
 package rftx.server;
 
-import lib.conn.univ.ConnContext;
-import lib.conn.server.IAuthServer;
+import model.conn.univ.ConnContext;
+import model.conn.server.IAuthServer;
 
 import java.net.Socket;
 

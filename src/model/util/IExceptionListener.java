@@ -1,4 +1,4 @@
-package lib.util;
+package model.util;
 
 /**
  * called by server when exception occurred while running.

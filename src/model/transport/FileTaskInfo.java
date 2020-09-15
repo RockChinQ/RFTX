@@ -1,4 +1,4 @@
-package lib.transport;
+package model.transport;
 
 /**
  * 描述正在接收的文件的信息

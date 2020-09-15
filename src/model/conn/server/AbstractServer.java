@@ -1,8 +1,8 @@
-package lib.conn.server;
+package model.conn.server;
 
-import lib.conn.univ.IHandler;
-import lib.conn.univ.IHandlerFactory;
-import lib.util.IExceptionListener;
+import model.conn.univ.IHandler;
+import model.conn.univ.IHandlerFactory;
+import model.util.IExceptionListener;
 
 import java.util.ArrayList;
 
@@ -62,5 +62,9 @@ public abstract class AbstractServer implements IServer{
 	private ArrayList<IHandler> clients=new ArrayList<>();
 	public ArrayList<IHandler> getClients() {
 		return clients;
+	}
+
+	public void setClients(ArrayList<IHandler> clients) {
+		this.clients = clients;
 	}
 }

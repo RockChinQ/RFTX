@@ -1,4 +1,4 @@
-package lib.transport;
+package model.transport;
 
 /**
  * transport station's basic implementation

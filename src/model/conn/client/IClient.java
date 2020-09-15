@@ -1,4 +1,4 @@
-package lib.conn.client;
+package model.conn.client;
 
 /**
  * Client interface.

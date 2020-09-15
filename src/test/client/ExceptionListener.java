@@ -1,6 +1,6 @@
 package test.client;
 
-import lib.util.IExceptionListener;
+import model.util.IExceptionListener;
 
 public class ExceptionListener implements IExceptionListener {
 	@Override

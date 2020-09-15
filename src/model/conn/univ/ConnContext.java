@@ -1,4 +1,4 @@
-package lib.conn.univ;
+package model.conn.univ;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
