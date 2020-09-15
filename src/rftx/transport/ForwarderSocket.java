@@ -11,7 +11,7 @@ import java.io.DataOutputStream;
  * @author Rock Chin
  */
 public class ForwarderSocket implements IForwarder {
-	private static final long BUFFER_LENGTH=1024;
+	private static final long BUFFER_LENGTH=8192;
 	/**
 	 * buf,will be set by handler
 	 * because data read from socket included flags for handler to recognize.

@@ -14,13 +14,12 @@ public class TransferStation extends AbstractStation{
 	 */
 	@Override
 	public void run(IForwarder from, IForwarder to, FileTaskInfo fileTaskInfo) throws Exception{
-		byte[] buf=new byte[1024];
+		byte[] buf=new byte[8192];
 		int len=0;
 		while ((len=from.readNext(buf))!=-1){
 			to.writeNext(buf,len);
 		}
 	}
-
 	@Override
 	public void dispose(IForwarder from,IForwarder to) {
 		try {
