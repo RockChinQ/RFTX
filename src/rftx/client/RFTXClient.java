@@ -6,9 +6,12 @@ import lib.conn.client.IClient;
 import lib.conn.univ.ConnContext;
 import lib.conn.univ.IHandler;
 import lib.conn.univ.IHandlerFactory;
-import lib.util.IExceptionListener;
+import rftx.univ.HandlerFactory;
+import rftx.util.ByteArrayOperator;
 
+import java.io.IOException;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 /**
  * RFTX client
@@ -16,26 +19,32 @@ import java.net.Socket;
  */
 public class RFTXClient extends AbstractClient implements IClient {
     /**
-     * create instance by addr,port
-     * @param addr server addr
-     * @param port service port
+     * Client name
      */
-    public RFTXClient(String addr,int port){
-        this.setAddr(addr);
-        this.setPort(port);
+    private String name="";
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * create instance by addr,port
+     */
+    public RFTXClient(String name){
+        this.setName(name);
         initDefault();
     }
 
     /**
      * create instance by addr,port,handlerFactory,authClient
-     * @param addr server addr
-     * @param port service pot
      * @param handlerFactory handler factory
      * @param authClient authClient
      */
-    public RFTXClient(String addr,int port,IHandlerFactory handlerFactory,IAuthClient authClient){
-        this.setAddr(addr);
-        this.setPort(port);
+    public RFTXClient(String name,IHandlerFactory handlerFactory,IAuthClient authClient){
+        this.setName(name);
         this.setHandlerFactory(handlerFactory);
         this.setAuthClient(authClient);
         initDefault();
@@ -54,12 +63,12 @@ public class RFTXClient extends AbstractClient implements IClient {
      * this is not a parallel method
      */
     @Override
-    public void connect() {
+    public void connect(String addr,int port) {
         Socket socket;
         try {
-            socket = new Socket(getAddr(), getPort());
+            socket = new Socket(addr, port);
         }catch (Exception e){
-            callExceptionListener(e,"cannot connect to "+getAddr()+":"+getPort());
+            callExceptionListener(e,"cannot connect to "+addr+":"+port);
             return;
         }
         ConnContext connContext;
@@ -69,7 +78,15 @@ public class RFTXClient extends AbstractClient implements IClient {
             callExceptionListener(authing,"cannot send auth message.");
             return;
         }
-        this.setHandler(this.getHandlerFactory().make(connContext));
-        this.getHandler().handle(connContext);
+        IHandler handler=this.getHandlerFactory().make(connContext);
+        this.getClients().add(handler);
+        handler.handle(connContext);
+        //send client name
+        try {
+            connContext.getOutputStream().write(ByteArrayOperator.append((byte) 1,("name "+getName()).getBytes(StandardCharsets.UTF_8)));
+            connContext.getOutputStream().flush();
+        } catch (IOException e) {
+            callExceptionListener(e,"can not send name.");
+        }
     }
 }

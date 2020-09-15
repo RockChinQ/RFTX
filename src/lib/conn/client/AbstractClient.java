@@ -4,28 +4,9 @@ import lib.conn.univ.IHandler;
 import lib.conn.univ.IHandlerFactory;
 import lib.util.IExceptionListener;
 
+import java.util.ArrayList;
+
 public abstract class AbstractClient implements IClient{
-
-	/**
-	 * support ipv4
-	 */
-	private String addr;
-	public String getAddr() {
-		return addr;
-	}
-
-	public void setAddr(String addr) {
-		this.addr = addr;
-	}
-
-	private int port;
-	public int getPort() {
-		return port;
-	}
-
-	public void setPort(int port) {
-		this.port = port;
-	}
 
 	/**
 	 * Handler factory
@@ -38,20 +19,6 @@ public abstract class AbstractClient implements IClient{
 	public void setHandlerFactory(IHandlerFactory handlerFactory) {
 		this.handlerFactory = handlerFactory;
 	}
-
-	/**
-	 * unique handler for unique conn to server
-	 */
-	private IHandler handler;
-
-	public IHandler getHandler() {
-		return handler;
-	}
-
-	public void setHandler(IHandler handler) {
-		this.handler = handler;
-	}
-
 	/**
 	 * send auth message while making conn
 	 */
@@ -81,4 +48,11 @@ public abstract class AbstractClient implements IClient{
 		}
 	}
 
+	/**
+	 * ArrayList stored all client conns
+	 */
+	private ArrayList<IHandler> clients=new ArrayList<>();
+	public ArrayList<IHandler> getClients() {
+		return clients;
+	}
 }

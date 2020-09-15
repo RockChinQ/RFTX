@@ -63,9 +63,4 @@ public abstract class AbstractServer implements IServer{
 	public ArrayList<IHandler> getClients() {
 		return clients;
 	}
-
-	public void setClients(ArrayList<IHandler> clients) {
-		this.clients = clients;
-	}
-
 }
