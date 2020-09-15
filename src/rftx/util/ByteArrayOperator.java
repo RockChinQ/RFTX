@@ -18,4 +18,12 @@ public class ByteArrayOperator {
 	public static byte[] append(byte origin,byte[] add){
 		return append(new byte[]{origin},add);
 	}
+	public static byte[] subArray(byte[] origin,int start,int end){
+		byte[] product=new byte[end-start];
+		int index=0;
+		for(int i=start;i<end;i++){
+			product[index++]=origin[i];
+		}
+		return product;
+	}
 }

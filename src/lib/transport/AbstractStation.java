@@ -10,15 +10,12 @@ public abstract class AbstractStation implements IStation{
 	public IForwarder getFrom() {
 		return from;
 	}
-
 	public void setFrom(IForwarder from) {
 		this.from = from;
 	}
-
 	public IForwarder getTo() {
 		return to;
 	}
-
 	public void setTo(IForwarder to) {
 		this.to = to;
 	}
