@@ -1,5 +1,6 @@
 package rftx.univ.func;
 
+import model.conn.univ.AbstractHandler;
 import model.conn.univ.IHandler;
 import rftx.univ.CmdProcessor;
 import rftx.univ.ConnHandler;
@@ -8,7 +9,7 @@ import rftx.util.cmd.AbstractProcessor;
 
 /**
  * handle a post request.
- * model:host0>host1>host2 name|savePath|size
+ * model:step host0>host1>host2 name|savePath|size
  * @author Rock Chin
  */
 public class FuncPost implements AbstractFunc {
@@ -34,13 +35,26 @@ public class FuncPost implements AbstractFunc {
 
 	@Override
 	public void run(String[] params, String cmd, AbstractProcessor processor) {
+		/**
+		 * 检查是不是自己，且长度等于1
+		 *  最后一个是自己则执行open指令
+		 * 第一个是自己，且长度大于1
+		 *  搜索第二个，是否找到
+		 *      找到，step++，转发到第二个host
+		 *  找不到
+		 *      抛出异常
+		 */
 		ConnHandler handler=((CmdProcessor)processor).getConnHandler();
-		String[] hostList=params[0].split(">");
-		//search for client
-		for(IHandler lshandler:handler.getHandlers()){
-			if(lshandler.getID().equals(hostList[0])){
-				//target found
+		int step=Integer.parseInt(params[0]);
+		String[] hostList=params[1].split(">");
+		if (step==hostList.length-1){//this host is target.
 
+		}else {
+			String lookfor=hostList[step+1];
+			for(AbstractHandler handler1:handler.getHandlers()){
+				if (handler1.getID().equals(lookfor)){
+					StringBuffer nextMsg=new StringBuffer(step+1+" "+params[1]);
+				}
 			}
 		}
 	}

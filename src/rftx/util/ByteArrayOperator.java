@@ -8,7 +8,7 @@ public class ByteArrayOperator {
 	public static byte[] append(byte[] origin,byte[] add){
 		byte[] product=new byte[origin.length+add.length];
 		for (int i=0;i<origin.length;i++){
-			product[i]=origin[1];
+			product[i]=origin[i];
 		}
 		for(int j=0;j<add.length;j++){
 			product[origin.length+j]=add[j];

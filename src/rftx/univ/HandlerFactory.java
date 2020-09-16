@@ -1,8 +1,11 @@
 package rftx.univ;
 
+import model.conn.univ.AbstractHandler;
 import model.conn.univ.ConnContext;
 import model.conn.univ.IHandler;
 import model.conn.univ.IHandlerFactory;
+
+import java.util.ArrayList;
 
 /**
  * Client handler factory for RFTX
@@ -16,7 +19,7 @@ public class HandlerFactory implements IHandlerFactory {
         return handlerFactory;
     }
     @Override
-    public IHandler make(ConnContext connContext) {
-        return new ConnHandler();
+    public AbstractHandler make(ConnContext connContext, ArrayList<AbstractHandler> handlersList) {
+        return new ConnHandler(handlersList);
     }
 }

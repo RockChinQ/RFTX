@@ -8,6 +8,7 @@ public interface IClient {
 	 * use addr and port to create a new conn to server
 	 * @param addr server addr
 	 * @param port service port
+	 * @throws Exception any exception
 	 */
-	void connect(String addr,int port);
+	void connect(String addr,int port)throws Exception;
 }

@@ -1,6 +1,7 @@
 package rftx.server;
 
 import model.conn.server.AbstractServer;
+import model.conn.univ.AbstractHandler;
 import model.conn.univ.ConnContext;
 import model.conn.univ.IHandler;
 import model.conn.univ.IHandlerFactory;
@@ -41,6 +42,8 @@ public class RFTXServer extends AbstractServer implements IServer {
             //accept
             while (true){
                 Socket socket=serverSocket.accept();
+                if (getClientConnectListener()!=null)
+                    getClientConnectListener().connecting();
                 //auth conn in new thread
                 try {
                     new Thread(()-> {
@@ -48,13 +51,17 @@ public class RFTXServer extends AbstractServer implements IServer {
                             //auth
                             ConnContext connContext = getAuthServer().auth(socket);
                             if (connContext != null) {
-                               IHandler handler=getHandlerFactory().make(connContext);
-                               getClients().add(handler);
-                               handler.handle(connContext);
+                                AbstractHandler handler=getHandlerFactory().make(connContext,getClients());
+                                getClients().add(handler);
+                                handler.handle(connContext);
+                                handler.setExceptionListener(getExceptionListener());
+                                handler.setClientConnectListener(getClientConnectListener());
                                 //send client name
                                 try {
                                     connContext.getOutputStream().write(ByteArrayOperator.append((byte) 1,("name "+getName()).getBytes(StandardCharsets.UTF_8)));
                                     connContext.getOutputStream().flush();
+                                    if (getClientConnectListener()!=null)
+                                        getClientConnectListener().connected();
                                 } catch (IOException e) {
                                     callExceptionListener(e,"can not send name.");
                                 }
@@ -88,7 +95,7 @@ public class RFTXServer extends AbstractServer implements IServer {
      * @param name server name
      * @param handlers already created handlers array list
      */
-    public RFTXServer(String name, ArrayList<IHandler> handlers){
+    public RFTXServer(String name, ArrayList<AbstractHandler> handlers){
         this.setName(name);
         this.setClients(handlers);
     }

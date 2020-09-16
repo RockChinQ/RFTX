@@ -3,6 +3,7 @@ package rftx.client;
 import model.conn.client.AbstractClient;
 import model.conn.client.IAuthClient;
 import model.conn.client.IClient;
+import model.conn.univ.AbstractHandler;
 import model.conn.univ.ConnContext;
 import model.conn.univ.IHandler;
 import model.conn.univ.IHandlerFactory;
@@ -47,7 +48,7 @@ public class RFTXClient extends AbstractClient implements IClient {
      * @param name client name
      * @param handlers already created handlers array list
      */
-    public RFTXClient(String name, ArrayList<IHandler> handlers){
+    public RFTXClient(String name, ArrayList<AbstractHandler> handlers){
         this.setName(name);
         this.setClients(handlers);
     }
@@ -74,32 +75,20 @@ public class RFTXClient extends AbstractClient implements IClient {
      * make ConnContext obj here and then auth
      * just try to connect once,if connect reset while handling conn after,throw exception there.
      * this is not a parallel method
+     * @throws Exception any exception
      */
     @Override
-    public void connect(String addr,int port) {
+    public void connect(String addr,int port) throws Exception{
         Socket socket;
-        try {
-            socket = new Socket(addr, port);
-        }catch (Exception e){
-            callExceptionListener(e,"cannot connect to "+addr+":"+port);
-            return;
-        }
+        socket = new Socket(addr, port);
         ConnContext connContext;
-        try {
-            connContext = getAuthClient().auth(socket);
-        }catch (Exception authing){
-            callExceptionListener(authing,"cannot send auth message.");
-            return;
-        }
-        IHandler handler=this.getHandlerFactory().make(connContext);
+        connContext = getAuthClient().auth(socket);
+        AbstractHandler handler=this.getHandlerFactory().make(connContext,getClients());
         this.getClients().add(handler);
+        handler.setClientConnectListener(getClientConnectListener());
         handler.handle(connContext);
         //send client name
-        try {
-            connContext.getOutputStream().write(ByteArrayOperator.append((byte) 1,("name "+getName()).getBytes(StandardCharsets.UTF_8)));
-            connContext.getOutputStream().flush();
-        } catch (IOException e) {
-            callExceptionListener(e,"can not send name.");
-        }
+        connContext.getOutputStream().write(ByteArrayOperator.append((byte) 1,("name "+getName()).getBytes(StandardCharsets.UTF_8)));
+        connContext.getOutputStream().flush();
     }
 }

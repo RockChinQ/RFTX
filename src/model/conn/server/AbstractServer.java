@@ -1,5 +1,6 @@
 package model.conn.server;
 
+import model.conn.univ.AbstractHandler;
 import model.conn.univ.IHandler;
 import model.conn.univ.IHandlerFactory;
 import model.util.IExceptionListener;
@@ -59,12 +60,25 @@ public abstract class AbstractServer implements IServer{
 	/**
 	 * ArrayList stored all client conns
 	 */
-	private ArrayList<IHandler> clients=new ArrayList<>();
-	public ArrayList<IHandler> getClients() {
+	private ArrayList<AbstractHandler> clients=new ArrayList<>();
+	public ArrayList<AbstractHandler> getClients() {
 		return clients;
 	}
 
-	public void setClients(ArrayList<IHandler> clients) {
+	public void setClients(ArrayList<AbstractHandler> clients) {
 		this.clients = clients;
+	}
+
+	/**
+	 * Client connecting listener
+	 * call when a client's conn is changing.
+	 */
+	private IClientConnectListener clientConnectListener;
+	public IClientConnectListener getClientConnectListener() {
+		return clientConnectListener;
+	}
+
+	public void setClientConnectListener(IClientConnectListener clientConnectListener) {
+		this.clientConnectListener = clientConnectListener;
 	}
 }

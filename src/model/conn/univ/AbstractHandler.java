@@ -1,6 +1,8 @@
 package model.conn.univ;
 
+import model.conn.server.IClientConnectListener;
 import model.transport.AbstractStation;
+import model.util.IExceptionListener;
 
 import java.util.ArrayList;
 
@@ -41,13 +43,42 @@ public abstract class AbstractHandler implements IHandler{
 	/**
 	 * point to server/client's connList
 	 */
-	private ArrayList<IHandler> handlers;
+	private ArrayList<AbstractHandler> handlers;
 
-	public ArrayList<IHandler> getHandlers() {
+	public ArrayList<AbstractHandler> getHandlers() {
 		return handlers;
 	}
 
-	public void setHandlers(ArrayList<IHandler> handlers) {
+	public void setHandlers(ArrayList<AbstractHandler> handlers) {
 		this.handlers = handlers;
 	}
+
+	/**
+	 * Client connecting listener
+	 * call when a client's conn is changing.
+	 */
+	private IClientConnectListener clientConnectListener;
+	public IClientConnectListener getClientConnectListener() {
+		return clientConnectListener;
+	}
+	public void setClientConnectListener(IClientConnectListener clientConnectListener) {
+		this.clientConnectListener = clientConnectListener;
+	}
+	/**
+	 * exception listener
+	 */
+	private IExceptionListener exceptionListener;
+	public IExceptionListener getExceptionListener() {
+		return exceptionListener;
+	}
+
+	public void setExceptionListener(IExceptionListener exceptionListener) {
+		this.exceptionListener = exceptionListener;
+	}
+	protected void callExceptionListener(Exception e,String msg){
+		if (exceptionListener!=null){
+			exceptionListener.exceptionCaught(e,msg);
+		}
+	}
+
 }
