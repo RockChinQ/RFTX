@@ -11,7 +11,7 @@ public class FileTaskInfo {
      * 文件大小，单位为B
      */
     private long size=0;
-    FileTaskInfo(String name, long size, String savePath){
+    public FileTaskInfo(String name, long size, String savePath){
         this.name=name;
         this.size=size;
         this.savePath=savePath;

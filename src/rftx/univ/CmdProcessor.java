@@ -1,6 +1,7 @@
 package rftx.univ;
 
 import rftx.univ.func.FuncName;
+import rftx.univ.func.FuncPost;
 import rftx.util.cmd.AbstractProcessor;
 import rftx.util.cmd.Command;
 
@@ -24,9 +25,11 @@ public class CmdProcessor extends AbstractProcessor {
 	}
 	protected void register(){
 		this.registerFunc(new FuncName());
+		this.registerFunc(new FuncPost());
 	}
 	@Override
 	protected Command parse(String cmdStr) {
+		System.out.println("process:"+cmdStr);
 		String[] spt=cmdStr.split(" ");
 		return new Command(spt[0],subArray(spt,1,spt.length),cmdStr);
 	}

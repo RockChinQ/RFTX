@@ -74,14 +74,16 @@ public class ForwarderSocket implements IForwarder {
 			throw new IllegalArgumentException("buf length should be "+BUFFER_LENGTH+".");
 		}
 		while (true){
-			if(this.buf==null){
-				wait(500);
-			}else{
-				for(int i=0;i<BUFFER_LENGTH;i++){
-					buf[i]=this.buf[i];
+			synchronized (this) {
+				if (this.buf == null) {
+					wait(500);
+				} else {
+					for (int i = 0; i < BUFFER_LENGTH; i++) {
+						buf[i] = this.buf[i];
+					}
+					this.buf = null;
+					return len;
 				}
-				this.buf=null;
-				return len;
 			}
 		}
 	}
