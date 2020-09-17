@@ -78,6 +78,9 @@ public class ForwarderSocket implements IForwarder {
 				if (this.buf == null) {
 					wait(500);
 				} else {
+					if(len==-1){
+						return -1;
+					}
 					for (int i = 0; i < BUFFER_LENGTH; i++) {
 						buf[i] = this.buf[i];
 					}

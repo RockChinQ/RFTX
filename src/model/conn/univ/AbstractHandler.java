@@ -19,6 +19,7 @@ public abstract class AbstractHandler implements IHandler{
 
 	public void setTransportStation(AbstractStation transportStation) {
 		this.transportStation = transportStation;
+		System.out.println("station set"+(this.transportStation==null));
 	}
 
 	private ConnContext connContext;

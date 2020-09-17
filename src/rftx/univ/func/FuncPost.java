@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 /**
  * transport message through conn link
- * model:step host0>host1>host2 <upload|download|ok|error> [params]
+ * model:step host0>host1>host2 <upload|download|ok|finish|error> [params]
  * @author Rock Chin
  */
 public class FuncPost implements AbstractFunc {
@@ -46,7 +46,7 @@ public class FuncPost implements AbstractFunc {
 		ConnHandler handler=((CmdProcessor)processor).getConnHandler();
 		int step=Integer.parseInt(params[0]);
 		String[] hostList=params[1].split(">");
-		switch (params[2]){
+		switch (params[2].replaceAll(String.valueOf('\u0000'),"")){
 			case "upload":{
 				/*如果是目标，则向源发送ok消息，并设置socket到file中转站。
 				* 不是目标，则搜索目标:找到，向目标发送post，设置socket到socket中转站。
@@ -96,11 +96,48 @@ public class FuncPost implements AbstractFunc {
 				break;
 			}
 			case "ok":{
+				System.out.println("ok"+params[2]);
 				//send same msg to next host,then run transport station
 				try {
-					sendToNextHost(handler,hostList[step+1],params);
-					((TransferStation)handler.getTransportStation()).run();
+					//if i am not target
+					if(step<hostList.length-1) {
+
+						System.out.println("amnot tar");
+						sendToNextHost(handler, hostList[step + 1], params);
+						((TransferStation) handler.getTransportStation()).run();
+					}else {
+						System.out.println("run station");
+						((TransferStation) handler.getTransportStation()).run();
+						//transport done
+						String msg2 = new String("post 1 " + reverseHostList(hostList) + " done");
+						handler.getConnContext().getOutputStream().write(ByteArrayOperator.append((byte) 1, msg2.getBytes(StandardCharsets.UTF_8)));
+						handler.getConnContext().getOutputStream().flush();
+					}
 				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				break;
+			}
+			case "download":{
+
+			}
+			case "done":{
+				try {
+					//if i am not target
+					System.out.println("done");
+					TransferStation station=((TransferStation)handler.getTransportStation());
+					if (step < hostList.length - 1){
+						//this operation will make station thread stop
+						((ForwarderSocket)station.getFrom()).setBuf(new byte[]{0},-1);
+						station.notify();
+						sendToNextHost(handler, hostList[step + 1], params);
+					}else{
+						((ForwarderSocket)station.getFrom()).setBuf(new byte[]{0},-1);
+						station.notify();
+						station.getTo().dispose();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				break;
 			}

@@ -2,6 +2,7 @@ package test.client;
 
 import model.conn.server.IClientConnectListener;
 import rftx.client.RFTXClient;
+import rftx.univ.ConnHandler;
 import rftx.util.ByteArrayOperator;
 
 import java.nio.charset.StandardCharsets;
@@ -40,9 +41,10 @@ public class ClientMain {
 		});
 		client.connect("localhost",1036);
 		Thread.sleep(1000);
-		client.getClients().get(0).getConnContext().getOutputStream()
+		/*client.getClients().get(0).getConnContext().getOutputStream()
 				.write(ByteArrayOperator.append((byte)1,"post 1 dev>dev-server upload test.txt|11111|testPath".getBytes(StandardCharsets.UTF_8)));
-		client.getClients().get(0).getConnContext().getOutputStream().flush();
+		client.getClients().get(0).getConnContext().getOutputStream().flush();*/
+		((ConnHandler)client.getClients().get(0)).send("dev>dev-server","testPath\\test.txt","test2");
 	}
 	public static int test(byte[] buf){
 		byte[] t1=new byte[]{20,1,2,3,4,5,6,7};
