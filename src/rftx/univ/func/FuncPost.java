@@ -54,47 +54,48 @@ public class FuncPost implements AbstractFunc {
 				*                   未找到，向源发error
 				* */
 				//create file task info obj
-				try {
-					String infoSpt[] = arrayToString(params, 3, params.length).split("\\|");
-					FileTaskInfo info = new FileTaskInfo(infoSpt[0], Long.parseLong(infoSpt[1]), infoSpt[2]);
-					//am i the target?
-					if (step == hostList.length - 1) {
-						System.out.println("open socket2file station");
-						//open socket2file station
-						TransferStation station = new TransferStation();
-						station.setFrom(new ForwarderSocket(info));
-						//make sure dir is exist
-						if(!new File(info.getSavePath().replaceAll(String.valueOf('\u0000'),"")).exists()) {
-							System.out.println("mkdirs "+info.getSavePath());
-							new File(info.getSavePath().replaceAll(String.valueOf('\u0000'),"")).mkdirs();
-						}
-						File target=new File((info.getSavePath()+File.separatorChar+info.getName()).replaceAll(String.valueOf('\u0000'),""));
-						station.setTo(new ForwarderFile(info, new DataOutputStream(new FileOutputStream(target))));
-						handler.setTransportStation(station);
-						//send ok here
-						System.out.println();
-						String msg2="post "+1+" "+reverseHostList(hostList)+" ok";
-						handler.getConnContext().getOutputStream().write(ByteArrayOperator.append((byte)1,msg2.getBytes(StandardCharsets.UTF_8)));
-						handler.getConnContext().getOutputStream().flush();
-						//launch station
-						station.run();
-					} else {
-						ConnHandler nextOne = index(hostList[step + 1], handler.getHandlers());
-						System.out.println("index "+hostList[step+1]+" null?="+(nextOne==null));
-						TransferStation station = new TransferStation();
-						station.setFrom(new ForwarderSocket(info));
-						station.setTo(new ForwarderSocket(info,nextOne.getConnContext().getOutputStream()));
-						handler.setTransportStation(station);
-						sendToNextHost(handler, hostList[step + 1], params);
-					}
-				}catch (Exception e){
-					String msg="post "+1+" "+reverseHostList(hostList)+" error cannotOpenStation@"+step+":"+handler.getID();
+				synchronized (handler.transportStation) {
 					try {
-						handler.getConnContext().getOutputStream().write(ByteArrayOperator.append((byte)1,msg.getBytes(StandardCharsets.UTF_8)));
-						handler.getConnContext().getOutputStream().flush();
-					} catch (IOException ioException) {
+						String infoSpt[] = arrayToString(params, 3, params.length).split("\\|");
+						FileTaskInfo info = new FileTaskInfo(infoSpt[0], Long.parseLong(infoSpt[1]), infoSpt[2]);
+						//am i the target?
+						if (step == hostList.length - 1) {
+							System.out.println("open socket2file station");
+							//open socket2file station
+							TransferStation station = new TransferStation();
+							station.setFrom(new ForwarderSocket(info));
+							//make sure dir is exist
+							if (!new File(info.getSavePath().replaceAll(String.valueOf('\u0000'), "")).exists()) {
+								System.out.println("mkdirs " + info.getSavePath());
+								new File(info.getSavePath().replaceAll(String.valueOf('\u0000'), "")).mkdirs();
+							}
+							File target = new File((info.getSavePath() + File.separatorChar + info.getName()).replaceAll(String.valueOf('\u0000'), ""));
+							station.setTo(new ForwarderFile(info, new DataOutputStream(new FileOutputStream(target))));
+							handler.setTransportStation(station);
+							//send ok here
+							String msg2 = "post " + 1 + " " + reverseHostList(hostList) + " ok";
+							handler.getConnContext().getOutputStream().write(ByteArrayOperator.append((byte) 1, msg2.getBytes(StandardCharsets.UTF_8)));
+							handler.getConnContext().getOutputStream().flush();
+							//launch station
+							station.run();
+						} else {
+							ConnHandler nextOne = index(hostList[step + 1], handler.getHandlers());
+							System.out.println("index " + hostList[step + 1] + " null?=" + (nextOne == null));
+							TransferStation station = new TransferStation();
+							station.setFrom(new ForwarderSocket(info));
+							station.setTo(new ForwarderSocket(info, nextOne.getConnContext().getOutputStream()));
+							handler.setTransportStation(station);
+							sendToNextHost(handler, hostList[step + 1], params);
+						}
+					} catch (Exception e) {
+						String msg = "post " + 1 + " " + reverseHostList(hostList) + " error cannotOpenStation@" + step + ":" + handler.getID();
+						try {
+							handler.getConnContext().getOutputStream().write(ByteArrayOperator.append((byte) 1, msg.getBytes(StandardCharsets.UTF_8)));
+							handler.getConnContext().getOutputStream().flush();
+						} catch (IOException ioException) {
+						}
+						e.printStackTrace();
 					}
-					e.printStackTrace();
 				}
 				break;
 			}
@@ -103,21 +104,24 @@ public class FuncPost implements AbstractFunc {
 				try {
 					//if i am not target
 					if(step<hostList.length-1) {
-
-						System.out.println("amnot tar station");
-						sendToNextHost(handler, hostList[step + 1], params);
-						System.out.println("run redirect station ID:"+index(hostList[step+1],handler.getHandlers()).getID());
-						((TransferStation) index(hostList[step+1],handler.getHandlers()).getTransportStation()).run();
+						synchronized (index(hostList[step+1],handler.getHandlers()).transportStation) {
+							System.out.println("amnot tar station");
+							sendToNextHost(handler, hostList[step + 1], params);
+							System.out.println("run redirect station ID:" + index(hostList[step + 1], handler.getHandlers()).getID());
+							((TransferStation) index(hostList[step + 1], handler.getHandlers()).getTransportStation()).run();
+						}
 					}else {
-						System.out.println("run station");
-						((TransferStation) handler.getTransportStation()).run();
-						//transport done
-						String msg2 = new String("post 1 " + reverseHostList(hostList) + " done");
-						System.out.println(msg2);
-						handler.getConnContext().getOutputStream().write(ByteArrayOperator.append((byte) 1, msg2.getBytes(StandardCharsets.UTF_8)));
-						handler.getConnContext().getOutputStream().flush();
-						synchronized (handler){
-							handler.notify();
+						synchronized (handler.transportStation) {
+							System.out.println("run station");
+							((TransferStation) handler.getTransportStation()).run();
+							//transport done
+							String msg2 = new String("post 1 " + reverseHostList(hostList) + " done");
+							System.out.println(msg2);
+							handler.getConnContext().getOutputStream().write(ByteArrayOperator.append((byte) 1, msg2.getBytes(StandardCharsets.UTF_8)));
+							handler.getConnContext().getOutputStream().flush();
+							synchronized (handler) {
+								handler.notify();
+							}
 						}
 					}
 				} catch (Exception e) {
@@ -154,6 +158,9 @@ public class FuncPost implements AbstractFunc {
 					e.printStackTrace();
 				}
 				break;
+			}
+			case "error":{
+
 			}
 		}
 	}

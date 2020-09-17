@@ -12,14 +12,13 @@ import java.util.ArrayList;
  */
 public abstract class AbstractHandler implements IHandler{
 
-	private AbstractStation transportStation;
+	public AbstractStation transportStation;
 	public AbstractStation getTransportStation() {
 		return transportStation;
 	}
 
-	public void setTransportStation(AbstractStation transportStation) {
+	public synchronized void setTransportStation(AbstractStation transportStation){
 		this.transportStation = transportStation;
-		System.out.println("station set"+(this.transportStation==null));
 	}
 
 	private ConnContext connContext;

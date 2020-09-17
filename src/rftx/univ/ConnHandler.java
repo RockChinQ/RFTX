@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * @author Rock Chin
  */
 public class ConnHandler extends AbstractHandler{
-	public Boolean waitForSend=false;
+	private Boolean lock=false;
 	/**
 	 * thread handling data from other side
 	 */
@@ -62,6 +62,7 @@ public class ConnHandler extends AbstractHandler{
 	});
 	public ConnHandler(ArrayList<AbstractHandler> handlers){
 		this.setHandlers(handlers);
+		this.setTransportStation(new TransferStation());
 	}
 	/**
 	 * processor cmd
@@ -90,26 +91,32 @@ public class ConnHandler extends AbstractHandler{
 		return getName();
 	}
 	public void send(String hostLink,String file,String savePath)throws Exception{
-		//set station
-		String[] pathSpt=file.split("\\\\");
-		File fromFile=new File(file);
-		if(!fromFile.exists()){
-			throw new FileNotFoundException();
-		}
-		FileTaskInfo info=new FileTaskInfo(pathSpt[pathSpt.length-1],fromFile.length(),savePath);
-		TransferStation station=new TransferStation();
-		ForwarderFile from=new ForwarderFile(info,new DataInputStream(new FileInputStream(fromFile)));
-		ForwarderSocket to=new ForwarderSocket(info,getConnContext().getOutputStream());
+		synchronized (transportStation) {
+			System.out.println("join");
+			//set station
+			String[] pathSpt = file.split("\\\\");
+			File fromFile = new File(file);
+			if (!fromFile.exists()) {
+				throw new FileNotFoundException();
+			}
+			FileTaskInfo info = new FileTaskInfo(pathSpt[pathSpt.length - 1], fromFile.length(), savePath);
+			TransferStation station = new TransferStation();
+			ForwarderFile from = new ForwarderFile(info, new DataInputStream(new FileInputStream(fromFile)));
+			ForwarderSocket to = new ForwarderSocket(info, getConnContext().getOutputStream());
 
-		station.setFrom(from);
-		station.setTo(to);
-		setTransportStation(station);
-		//send msg
-		String msg="post 1 "+hostLink+" upload "+info.getName()+"|"+info.getSize()+"|"+info.getSavePath();
-		getConnContext().getOutputStream().write(ByteArrayOperator.append((byte)1,msg.getBytes(StandardCharsets.UTF_8)));
-		getConnContext().getOutputStream().flush();
-		synchronized (this){
-			this.wait();
+			station.setFrom(from);
+			station.setTo(to);
+
+			setTransportStation(station);
+			System.out.println("set station");
+			//send msg
+			String msg = "post 1 " + hostLink + " upload " + info.getName() + "|" + info.getSize() + "|" + info.getSavePath();
+			getConnContext().getOutputStream().write(ByteArrayOperator.append((byte) 1, msg.getBytes(StandardCharsets.UTF_8)));
+			getConnContext().getOutputStream().flush();
+			synchronized (this) {
+				this.wait();
+			}
+			System.out.println("finish send");
 		}
 	}
 
