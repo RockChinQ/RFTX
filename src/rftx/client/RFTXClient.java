@@ -78,17 +78,20 @@ public class RFTXClient extends AbstractClient implements IClient {
      * @throws Exception any exception
      */
     @Override
-    public void connect(String addr,int port) throws Exception{
+    public int connect(String addr,int port) throws Exception{
         Socket socket;
         socket = new Socket(addr, port);
         ConnContext connContext;
         connContext = getAuthClient().auth(socket);
         AbstractHandler handler=this.getHandlerFactory().make(connContext,getClients());
-        this.getClients().add(handler);
         handler.setClientConnectListener(getClientConnectListener());
         handler.handle(connContext);
         //send client name
         connContext.getOutputStream().write(ByteArrayOperator.append((byte) 1,("name "+getName()).getBytes(StandardCharsets.UTF_8)));
         connContext.getOutputStream().flush();
+        synchronized (this.getClients()) {
+            this.getClients().add(handler);
+            return this.getClients().size()-1;
+        }
     }
 }

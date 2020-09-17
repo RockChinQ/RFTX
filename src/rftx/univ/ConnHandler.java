@@ -43,7 +43,7 @@ public class ConnHandler extends AbstractHandler{
 					}
 				}else if(data[0]==(byte)1){//string data
 					String msg= new String(ByteArrayOperator.subArray(data,1,data.length), StandardCharsets.UTF_8);
-					getProcessor().start(msg);
+					getProcessor().start(msg.replaceAll(String.valueOf('\u0000'),""));
 				}else{
 					callExceptionListener(new IllegalArgumentException("illegal message"),"illegal message");
 				}

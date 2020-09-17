@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Client2" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="test.client.Client2" />
+    <module name="RFTX" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

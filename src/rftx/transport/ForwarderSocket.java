@@ -79,13 +79,13 @@ public class ForwarderSocket implements IForwarder {
 		}
 		while (true){
 			synchronized (this) {
+				if(len==-1){
+					return -1;
+				}
 				if (this.buf == null) {
 					System.out.println("wait");
-					wait();
+					wait(500);
 				} else {
-					if(len==-1){
-						return -1;
-					}
 					for (int i = 0; i < BUFFER_LENGTH; i++) {
 						buf[i] = this.buf[i];
 					}

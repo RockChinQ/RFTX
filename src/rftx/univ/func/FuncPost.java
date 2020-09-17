@@ -14,6 +14,7 @@ import rftx.util.cmd.AbstractProcessor;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * transport message through conn link
@@ -71,6 +72,7 @@ public class FuncPost implements AbstractFunc {
 						station.setTo(new ForwarderFile(info, new DataOutputStream(new FileOutputStream(target))));
 						handler.setTransportStation(station);
 						//send ok here
+						System.out.println();
 						String msg2="post "+1+" "+reverseHostList(hostList)+" ok";
 						handler.getConnContext().getOutputStream().write(ByteArrayOperator.append((byte)1,msg2.getBytes(StandardCharsets.UTF_8)));
 						handler.getConnContext().getOutputStream().flush();
@@ -78,6 +80,7 @@ public class FuncPost implements AbstractFunc {
 						station.run();
 					} else {
 						ConnHandler nextOne = index(hostList[step + 1], handler.getHandlers());
+						System.out.println("index "+hostList[step+1]+" null?="+(nextOne==null));
 						TransferStation station = new TransferStation();
 						station.setFrom(new ForwarderSocket(info));
 						station.setTo(new ForwarderSocket(info,nextOne.getConnContext().getOutputStream()));
@@ -101,9 +104,10 @@ public class FuncPost implements AbstractFunc {
 					//if i am not target
 					if(step<hostList.length-1) {
 
-						System.out.println("amnot tar");
+						System.out.println("amnot tar station");
 						sendToNextHost(handler, hostList[step + 1], params);
-						((TransferStation) handler.getTransportStation()).run();
+						System.out.println("run redirect station ID:"+index(hostList[step+1],handler.getHandlers()).getID());
+						((TransferStation) index(hostList[step+1],handler.getHandlers()).getTransportStation()).run();
 					}else {
 						System.out.println("run station");
 						((TransferStation) handler.getTransportStation()).run();
@@ -131,14 +135,18 @@ public class FuncPost implements AbstractFunc {
 					TransferStation station=((TransferStation)handler.getTransportStation());
 					if (step < hostList.length - 1){
 						//this operation will make station thread stop
-						((ForwarderSocket)station.getFrom()).setBuf(new byte[]{0},-1);
-						station.notify();
+						synchronized (station.getFrom()) {
+							System.out.println("done exit socket2socket station");
+							((ForwarderSocket) station.getFrom()).setBuf(new byte[]{0}, -1);
+							station.getFrom().notify();
+						}
 						sendToNextHost(handler, hostList[step + 1], params);
 					}else{
 						//你idea说我在局部变量上同步，我要是不这样做我能编译通过？
-						synchronized (station) {
+						synchronized (station.getFrom()) {
+							System.out.println("done dispose socket2file station");
 							((ForwarderSocket) station.getFrom()).setBuf(new byte[]{0}, -1);
-							station.notify();
+							station.getFrom().notify();
 							station.getTo().dispose();
 						}
 					}
@@ -158,7 +166,7 @@ public class FuncPost implements AbstractFunc {
 	public void sendToNextHost(ConnHandler from,String nextName,String[] params)throws Exception{
 		AbstractHandler nextHost=index(nextName,from.getHandlers());
 		StringBuffer msg=new StringBuffer("post "+(Integer.parseInt(params[0])+1)+" "
-				+reverseHostList(params[1].split(">")));
+				+params[1]);
 		//pack control msg
 		for(int i=2;i<params.length;i++){
 			msg.append(" "+params[i]);
@@ -168,6 +176,7 @@ public class FuncPost implements AbstractFunc {
 	}
 	public ConnHandler index(String name,ArrayList<AbstractHandler> handlers){
 		for(AbstractHandler handler:handlers){
+			System.out.println("      indexing:"+handler.getID()+" name:"+name+" equals:"+handler.getID().equals(name));
 			if(handler.getID().equals(name)){
 				return (ConnHandler)handler;
 			}
@@ -185,6 +194,13 @@ public class FuncPost implements AbstractFunc {
 		StringBuffer result=new StringBuffer();
 		for(int i=start;i<end;i++){
 			result.append(arr[i]+(i==end-1?"":" "));
+		}
+		return result.toString();
+	}
+	public String getHostListStr(String[] hostList){
+		StringBuffer result=new StringBuffer(hostList[0]);
+		for(int i=1;i<hostList.length;i++){
+			result.append(">"+hostList[i]);
 		}
 		return result.toString();
 	}

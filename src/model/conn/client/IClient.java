@@ -9,6 +9,7 @@ public interface IClient {
 	 * @param addr server addr
 	 * @param port service port
 	 * @throws Exception any exception
+	 * @return index of new conn
 	 */
-	void connect(String addr,int port)throws Exception;
+	int connect(String addr,int port)throws Exception;
 }

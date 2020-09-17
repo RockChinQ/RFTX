@@ -3,14 +3,12 @@ package test.client;
 import model.conn.server.IClientConnectListener;
 import rftx.client.RFTXClient;
 import rftx.univ.ConnHandler;
-import rftx.util.ByteArrayOperator;
 
-import java.nio.charset.StandardCharsets;
-
-public class ClientMain {
+public class Client2 {
 	static RFTXClient client;
 	public static void main(String[] args)throws Exception{
-		client=new RFTXClient("dev");
+
+		client=new RFTXClient("dev2");
 		client.setClientConnectListener(new IClientConnectListener() {
 			@Override
 			public void connecting() {
@@ -40,20 +38,8 @@ public class ClientMain {
 			}
 		});
 		int first=client.connect("localhost",1036);
-		Thread.sleep(1000);
 		/*client.getClients().get(0).getConnContext().getOutputStream()
 				.write(ByteArrayOperator.append((byte)1,"post 1 dev>dev-server upload test.txt|11111|testPath".getBytes(StandardCharsets.UTF_8)));
 		client.getClients().get(0).getConnContext().getOutputStream().flush();*/
-
-			try {
-				((ConnHandler) client.getClients().get(0)).send("dev>dev-server>dev2", "testPath\\test.txt", "testFinally");
-			}catch (Exception e){
-				e.printStackTrace();
-			}
-	}
-	public static int test(byte[] buf){
-		byte[] t1=new byte[]{20,1,2,3,4,5,6,7};
-		buf=t1.clone();
-		return 7;
 	}
 }
