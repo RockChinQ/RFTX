@@ -26,8 +26,12 @@ public class ForwarderSocket implements IForwarder {
 	}
 
 	public void setBuf(byte[] buf,int len) {
+		if (len==-1){
+			this.len=-1;
+			return;
+		}
 		if(buf.length!=BUFFER_LENGTH){
-			throw new IllegalArgumentException("buf length should be "+BUFFER_LENGTH+".");
+			throw new IllegalArgumentException("buf arr length should be "+BUFFER_LENGTH+".Provided "+buf.length);
 		}
 		this.buf = buf;
 		this.len=len;
@@ -76,7 +80,8 @@ public class ForwarderSocket implements IForwarder {
 		while (true){
 			synchronized (this) {
 				if (this.buf == null) {
-					wait(500);
+					System.out.println("wait");
+					wait();
 				} else {
 					if(len==-1){
 						return -1;

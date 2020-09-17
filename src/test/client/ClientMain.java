@@ -44,7 +44,15 @@ public class ClientMain {
 		/*client.getClients().get(0).getConnContext().getOutputStream()
 				.write(ByteArrayOperator.append((byte)1,"post 1 dev>dev-server upload test.txt|11111|testPath".getBytes(StandardCharsets.UTF_8)));
 		client.getClients().get(0).getConnContext().getOutputStream().flush();*/
-		((ConnHandler)client.getClients().get(0)).send("dev>dev-server","testPath\\test.txt","test2");
+		new Thread(()-> {
+			try {
+				((ConnHandler) client.getClients().get(0)).send("dev>dev-server", "testPath\\test.txt", "test2");
+				((ConnHandler) client.getClients().get(0)).send("dev>dev-server", "testPath\\test.txt", "test3");
+				((ConnHandler) client.getClients().get(0)).send("dev>dev-server", "testPath\\test.txt", "test4");
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}).start();
 	}
 	public static int test(byte[] buf){
 		byte[] t1=new byte[]{20,1,2,3,4,5,6,7};

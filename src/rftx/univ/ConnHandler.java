@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * @author Rock Chin
  */
 public class ConnHandler extends AbstractHandler{
-
+	public Boolean waitForSend=false;
 	/**
 	 * thread handling data from other side
 	 */
@@ -37,14 +37,17 @@ public class ConnHandler extends AbstractHandler{
 				if (data[0]==(byte)0){//byte data
 					System.out.println((getTransportStation()==null)+" ");
 					((ForwarderSocket)getTransportStation().getFrom())
-							.setBuf(ByteArrayOperator.subArray(data,1,data.length),len);
-					getTransportStation().getFrom().notify();
+							.setBuf(ByteArrayOperator.subArray(data,1,data.length),len-1);
+					synchronized (getTransportStation().getFrom()) {
+						getTransportStation().getFrom().notify();
+					}
 				}else if(data[0]==(byte)1){//string data
 					String msg= new String(ByteArrayOperator.subArray(data,1,data.length), StandardCharsets.UTF_8);
 					getProcessor().start(msg);
 				}else{
 					callExceptionListener(new IllegalArgumentException("illegal message"),"illegal message");
 				}
+				data=new byte[8193];
 			}
 		}catch (Exception e){
 			if (getClientConnectListener()!=null)
@@ -52,6 +55,9 @@ public class ConnHandler extends AbstractHandler{
 			e.printStackTrace();
 			if(getClientConnectListener()!=null)
 				getClientConnectListener().disconnected();
+			try {
+				getConnContext().getSocket().close();
+			}catch (Exception e0){e.printStackTrace();}
 		}
 	});
 	public ConnHandler(ArrayList<AbstractHandler> handlers){
@@ -102,7 +108,9 @@ public class ConnHandler extends AbstractHandler{
 		String msg="post 1 "+hostLink+" upload "+info.getName()+"|"+info.getSize()+"|"+info.getSavePath();
 		getConnContext().getOutputStream().write(ByteArrayOperator.append((byte)1,msg.getBytes(StandardCharsets.UTF_8)));
 		getConnContext().getOutputStream().flush();
-
+		synchronized (this){
+			this.wait();
+		}
 	}
 
 	public String reverseHostList(String[] hostList){

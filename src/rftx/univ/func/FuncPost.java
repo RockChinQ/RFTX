@@ -71,8 +71,8 @@ public class FuncPost implements AbstractFunc {
 						station.setTo(new ForwarderFile(info, new DataOutputStream(new FileOutputStream(target))));
 						handler.setTransportStation(station);
 						//send ok here
-						String msg="post "+1+" "+reverseHostList(hostList)+" ok";
-						handler.getConnContext().getOutputStream().write(ByteArrayOperator.append((byte)1,msg.getBytes(StandardCharsets.UTF_8)));
+						String msg2="post "+1+" "+reverseHostList(hostList)+" ok";
+						handler.getConnContext().getOutputStream().write(ByteArrayOperator.append((byte)1,msg2.getBytes(StandardCharsets.UTF_8)));
 						handler.getConnContext().getOutputStream().flush();
 						//launch station
 						station.run();
@@ -96,7 +96,6 @@ public class FuncPost implements AbstractFunc {
 				break;
 			}
 			case "ok":{
-				System.out.println("ok"+params[2]);
 				//send same msg to next host,then run transport station
 				try {
 					//if i am not target
@@ -110,8 +109,12 @@ public class FuncPost implements AbstractFunc {
 						((TransferStation) handler.getTransportStation()).run();
 						//transport done
 						String msg2 = new String("post 1 " + reverseHostList(hostList) + " done");
+						System.out.println(msg2);
 						handler.getConnContext().getOutputStream().write(ByteArrayOperator.append((byte) 1, msg2.getBytes(StandardCharsets.UTF_8)));
 						handler.getConnContext().getOutputStream().flush();
+						synchronized (handler){
+							handler.notify();
+						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -132,9 +135,12 @@ public class FuncPost implements AbstractFunc {
 						station.notify();
 						sendToNextHost(handler, hostList[step + 1], params);
 					}else{
-						((ForwarderSocket)station.getFrom()).setBuf(new byte[]{0},-1);
-						station.notify();
-						station.getTo().dispose();
+						//你idea说我在局部变量上同步，我要是不这样做我能编译通过？
+						synchronized (station) {
+							((ForwarderSocket) station.getFrom()).setBuf(new byte[]{0}, -1);
+							station.notify();
+							station.getTo().dispose();
+						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
